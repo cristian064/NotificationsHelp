@@ -13,7 +13,9 @@ import Firebase
 
 public protocol NotificationsProtocol: UNUserNotificationCenterDelegate, MessagingDelegate{
     func setupNotifications(_ application: UIApplication)
-    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)
+    func didReceiveTokenWith(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)
+    func didMessaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?)
 }
 
 extension NotificationsProtocol {
@@ -55,10 +57,12 @@ extension NotificationsProtocol {
         })
     }
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    public func didReceiveTokenWith(didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
     }
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+    
+    
+    public func didMessaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         let tokenDict = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(
             name: Notification.Name("FCMToken"),
